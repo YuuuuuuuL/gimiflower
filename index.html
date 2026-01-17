@@ -2,42 +2,31 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>雞米花春聯排版工具</title>
+    <title>春聯紅底極致排版工具</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { --a4-w: 210mm; --a4-h: 297mm; }
         * { box-sizing: border-box; }
-        body { background: #2c2c2c; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; }
-        .toolbar { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; width: 750px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        body { background: #1a1a1a; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; }
         
-        /* 1. 調整主容器的間距 */
-	#a4-page {
-    		width: var(--a4-w); height: var(--a4-h);
-    		background: #e60012; 
-    		padding: 8mm;           /* 頁面邊距也調大一點，避免印不到 */
-    		display: flex; 
-    		flex-wrap: wrap; 
-    		gap: 6mm;               /* <--- 這裡調大：物件之間的上下左右間距 */
-    		align-content: flex-start; 
-    		overflow: hidden; 
-    		position: relative;
-	}
+        .toolbar { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; width: 750px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        
+        /* A4 紙張：改為大紅色背景 */
+        #a4-page {
+            width: var(--a4-w); height: var(--a4-h);
+            background: #e60012; /* 經典春聯紅 */
+            padding: 3mm; 
+            display: flex; flex-wrap: wrap; gap: 2mm; 
+            align-content: flex-start; overflow: hidden; position: relative;
+        }
 
-	/* 2. 調整橫向組合的間距 */
-	.combo-row { 
-    		display: flex; 
-    		gap: 6mm;               /* <--- 這裡調大：大圖與旁邊小圖的間距 */
-    		align-items: flex-start; 
-	}
+        .combo-row { display: flex; gap: 2mm; align-items: flex-start; }
+        .v-stack { display: flex; flex-direction: column; gap: 2mm; }
 
-	/* 3. 調整縱向堆疊的間距 */
-	.v-stack { 
-    		display: flex; 
-    		flex-direction: column; 
-    		gap: 6mm;               /* <--- 這裡調大：小圖垂直相疊的間距 */
-	}
+        /* 格子樣式：白色細邊框方便辨識 */
         .chun-lian {
-            border: 0.5px solid #eee; background: #fffafa;
+            border: 0.5px solid rgba(255, 255, 255, 0.4); 
+            background: rgba(255, 255, 255, 0.05);
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; overflow: hidden; position: relative; flex-shrink: 0;
         }
@@ -48,15 +37,15 @@
         .s10 { width: 100mm; height: 100mm; }
         .s5  { width: 50mm; height: 50mm; }
         .s4  { width: 40mm; height: 40mm; }
-        .long-big { width: 50mm; height: 200mm; }   /* 5x20 cm */
-        .long-small { width: 30mm; height: 120mm; } /* 3x12 cm */
+        .long-big { width: 50mm; height: 200mm; }
+        .long-small { width: 30mm; height: 120mm; }
 
         .btn-group { margin: 10px 0; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         button { padding: 8px 14px; margin: 4px; cursor: pointer; border-radius: 4px; border: none; font-weight: bold; }
-        .btn-combo { background: #6200ee; color: white; }
-        .btn-new { background: #ff5722; color: white; } /* 新尺寸按鈕 */
-        .btn-std { background: #03dac6; color: black; }
-        .btn-save { background: #cf6679; color: white; width: 100%; margin-top: 10px; }
+        .btn-combo { background: #d32f2f; color: white; } /* 改為深紅按鈕 */
+        .btn-new { background: #ff9800; color: white; }
+        .btn-std { background: #4caf50; color: white; }
+        .btn-save { background: #c62828; color: white; width: 100%; margin-top: 10px; font-size: 16px; }
         .label { display: block; font-size: 12px; color: #666; margin-bottom: 5px; font-weight: bold; }
     </style>
 </head>
@@ -64,27 +53,27 @@
 
 <div class="toolbar">
     <div class="btn-group">
-        <span class="label">🚀 空間極致組合</span>
+        <span class="label">🧧 賀歲最佳組合</span>
         <button class="btn-combo" onclick="addBestCombo15()">15cm 組合 (15+5*3)</button>
         <button class="btn-combo" onclick="addBestCombo10()">10cm 組合 (10+5*4)</button>
     </div>
 
     <div class="btn-group">
-        <span class="label">✨ 新增對聯尺寸</span>
-        <button class="btn-new" onclick="addSingle('long-big')">+ 大對聯 (5x20cm)</button>
-        <button class="btn-new" onclick="addSingle('long-small')">+ 小對聯 (3x12cm)</button>
-        <button class="btn-new" onclick="addSingle('s4')">+ 迷你斗方 (4x4cm)</button>
+        <span class="label">📜 對聯尺寸</span>
+        <button class="btn-new" onclick="addSingle('long-big')">大對聯 (5x20cm)</button>
+        <button class="btn-new" onclick="addSingle('long-small')">小對聯 (3x12cm)</button>
+        <button class="btn-new" onclick="addSingle('s4')">迷你斗方 (4x4cm)</button>
     </div>
 
     <div class="btn-group" style="border:none;">
-        <span class="label">📏 標準斗方</span>
+        <span class="label">🟧 標準尺寸</span>
         <button class="btn-std" onclick="addSingle('s15')">15cm</button>
         <button class="btn-std" onclick="addSingle('s10')">10cm</button>
         <button class="btn-std" onclick="addSingle('s5')">5cm</button>
-        <button onclick="document.getElementById('a4-page').innerHTML=''" style="background:#757575; color:white;">清空畫布</button>
+        <button onclick="document.getElementById('a4-page').innerHTML=''" style="background:#444; color:white;">清空</button>
     </div>
     
-    <button class="btn-save" onclick="exportImage()">下載高品質列印 PNG</button>
+    <button class="btn-save" onclick="exportImage()">確認並下載紅底列印圖</button>
 </div>
 
 <div id="a4-page"></div>
@@ -117,7 +106,7 @@
         const row = document.createElement('div');
         row.className = 'combo-row';
         row.appendChild(makeBox('s10'));
-        for(let i=0; i<2; i++) { // 兩排 5cm
+        for(let i=0; i<2; i++) {
             const v = document.createElement('div');
             v.className = 'v-stack';
             v.appendChild(makeBox('s5')); v.appendChild(makeBox('s5'));
@@ -126,16 +115,12 @@
         canFit(row);
     }
 
-    function addSingle(cls) {
-        canFit(makeBox(cls));
-    }
+    function addSingle(cls) { canFit(makeBox(cls)); }
 
     function canFit(el) {
         a4.appendChild(el);
         if (a4.scrollHeight > a4.clientHeight + 2) {
-            alert("空間不足，無法放入！");
-            a4.removeChild(el);
-            return false;
+            alert("空間不足！"); a4.removeChild(el); return false;
         }
         return true;
     }
@@ -157,9 +142,9 @@
                 ctx.drawImage(img, 0, 0, w, h);
                 targetBox.innerHTML = '';
                 const newImg = document.createElement('img');
-                newImg.src = canvas.toDataURL('image/jpeg', 0.85);
+                newImg.src = canvas.toDataURL('image/jpeg', 0.9);
                 targetBox.appendChild(newImg);
-		targetBox.style.border = "none"; // 上傳後移除邊框
+                targetBox.style.border = "none"; // 上傳後移除邊框
             };
             img.src = event.target.result;
         };
@@ -168,9 +153,9 @@
 
     function exportImage() {
         if (a4.children.length === 0) return alert("請先新增春聯");
-        html2canvas(a4, { scale: 3, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
+        html2canvas(a4, { scale: 3, useCORS: true }).then(canvas => {
             const a = document.createElement('a');
-            a.download = 'custom_chunlian_layout.png';
+            a.download = 'Red_ChunLian_A4.png';
             a.href = canvas.toDataURL('image/png');
             a.click();
         });
